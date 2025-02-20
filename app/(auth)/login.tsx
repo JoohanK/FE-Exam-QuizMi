@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Text, TextInput, Button, View, StyleSheet } from "react-native";
-import { auth, db } from "../../firebaseConfig"; // Ensure db is imported
+import { auth, db } from "../../firebaseConfig";
 import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
@@ -25,10 +25,9 @@ export default function Login() {
         password
       );
       setUser(userCredential.user);
-
       alert("User signed in: " + userCredential.user.email);
     } catch (error) {
-      alert(error);
+      alert(error); // Use error.message for better readability
     }
   };
 
@@ -55,7 +54,6 @@ export default function Login() {
       }
 
       setUser(user);
-
       console.log(user.displayName);
     } catch (error) {
       console.error("Google login error:", error);
@@ -80,12 +78,10 @@ export default function Login() {
         onChangeText={setPassword}
       />
       <Button title="Sign in" onPress={handleSubmit} />
-      <View style={{ height: 10 }} /> {/* Replaced <br /> */}
       <Button title="Sign in with Google" onPress={handleGoogleLogin} />
-      <View style={{ height: 10 }} />
       <Button
-        title="Don't have an account? Register"
-        onPress={() => router.push("/register")}
+        title="Register"
+        onPress={() => router.push("/(auth)/register")}
       />
     </View>
   );

@@ -56,7 +56,7 @@ export default function Register() {
         onChangeText={setPassword}
       />
       <Button title="Register" onPress={handleSubmit} />
-      <Text></Text>
+
       <Button
         title="Already have an account? Sign in"
         onPress={() => router.push("/login")}
