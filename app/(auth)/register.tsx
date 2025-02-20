@@ -3,20 +3,40 @@ import { Text, TextInput, Button, View, StyleSheet } from "react-native";
 import { auth } from "../../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "expo-router";
+import { db } from "../../firebaseConfig";
+import { setDoc, doc, getFirestore } from "firebase/firestore";
+import { AuthContext } from "@/context/AuthContext";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const { setUser } = React.useContext(AuthContext);
 
-  const handleSubmit = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        alert("User registered: " + userCredential.user.email);
-      })
-      .catch((error) => {
-        alert(error.message);
+  const handleSubmit = async () => {
+    try {
+      // Create the user
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      // Write to Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        username: user.email,
+        email: user.email,
+        profilePicture: "",
+        createdAt: new Date(),
       });
+
+      alert("User registered: " + user.email);
+      setUser(user);
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert(error);
+    }
   };
 
   return (
@@ -36,7 +56,7 @@ export default function Register() {
         onChangeText={setPassword}
       />
       <Button title="Register" onPress={handleSubmit} />
-      <br />
+      <Text></Text>
       <Button
         title="Already have an account? Sign in"
         onPress={() => router.push("/login")}
